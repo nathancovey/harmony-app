@@ -15,7 +15,7 @@ export function Sidebar() {
   return (
     <div className="flex h-full w-64 flex-col border-r bg-background">
       <div className="p-6">
-        <img src="/harmony-logo.svg" alt="Harmony" className="h-8" />
+        <img src="harmony-logo.svg" alt="Harmony" className="h-8" />
       </div>
       
       <nav className="flex-1 space-y-1 px-6">
