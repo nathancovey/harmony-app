@@ -10,7 +10,7 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { Trash2 } from "lucide-react";
-import { Role, Goal } from "@/types/roles";
+import { Role } from "@/types/roles";
 
 interface RoleCardProps {
   role: Role;
@@ -77,7 +77,7 @@ export default function RoleCard({ role, onDelete, onChange }: RoleCardProps) {
     adjustTextareaHeight(event.target);
   };
 
-  const handleGoalKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>, goalId: string) => {
+  const handleGoalKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       if (role.goals.length < MAX_GOALS) {
@@ -160,7 +160,7 @@ export default function RoleCard({ role, onDelete, onChange }: RoleCardProps) {
                 ref={el => goalInputRefs.current[goal.id] = el}
                 value={goal.text}
                 onChange={(e) => handleGoalChange(goal.id, e)}
-                onKeyDown={(e) => handleGoalKeyPress(e, goal.id)}
+                onKeyDown={(e) => handleGoalKeyPress(e)}
                 onFocus={() => handleGoalFocus(goal.id)}
                 onBlur={(e) => handleGoalBlur(goal.id, e)}
                 rows={1}
