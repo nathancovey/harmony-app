@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { MainLayout } from './components/layout/main-layout';
 import ThisWeek from './pages/this-week';
 import Mission from './pages/mission';
@@ -8,7 +8,7 @@ import Analytics from './pages/analytics';
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<ThisWeek />} />
@@ -18,7 +18,7 @@ function App() {
           <Route path="/analytics" element={<Analytics />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
