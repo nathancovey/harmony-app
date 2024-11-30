@@ -24,9 +24,20 @@ export default function ThisWeek() {
   useEffect(() => {
     const savedRoles = localStorage.getItem(STORAGE_KEY);
     if (savedRoles) {
-      setRoles(JSON.parse(savedRoles));
+      try {
+        const parsedRoles = JSON.parse(savedRoles, (key, value) => {
+          // If this is a goal's text value, ensure line breaks are preserved
+          if (key === 'text' && typeof value === 'string') {
+            return value.replace(/\\n/g, '\n');
+          }
+          return value;
+        });
+        setRoles(parsedRoles);
+      } catch (error) {
+        console.error('Error parsing saved roles:', error);
+        setRoles([{ ...DEFAULT_ROLE, id: Date.now().toString() }]);
+      }
     } else {
-      // Initialize with one default role if none exist
       setRoles([{ ...DEFAULT_ROLE, id: Date.now().toString() }]);
     }
   }, []);
@@ -34,7 +45,18 @@ export default function ThisWeek() {
   // Save roles to localStorage whenever they change
   useEffect(() => {
     if (roles.length > 0) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(roles));
+      try {
+        const serializedRoles = JSON.stringify(roles, (key, value) => {
+          // If this is a goal's text value, ensure line breaks are encoded
+          if (key === 'text' && typeof value === 'string') {
+            return value.replace(/\n/g, '\\n');
+          }
+          return value;
+        });
+        localStorage.setItem(STORAGE_KEY, serializedRoles);
+      } catch (error) {
+        console.error('Error saving roles:', error);
+      }
     }
   }, [roles]);
 
@@ -91,7 +113,6 @@ export default function ThisWeek() {
           />
         ))}
       </div>
-      <YouTubeEmbed videoId="YOUR_VIDEO_ID_HERE" />
     </div>
   );
 }

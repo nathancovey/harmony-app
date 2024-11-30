@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/context-menu";
 import { Trash2 } from "lucide-react";
 import { Role } from "@/types/roles";
+import { cn } from "@/lib/utils";
 
 interface RoleCardProps {
   role: Role;
@@ -62,6 +63,7 @@ export default function RoleCard({ role, onDelete, onChange }: RoleCardProps) {
 
   const handleGoalChange = (goalId: string, event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newText = event.target.value;
+    
     if (newText.length > MAX_GOAL_LENGTH) return;
     
     const lines = newText.split('\n');
@@ -77,23 +79,27 @@ export default function RoleCard({ role, onDelete, onChange }: RoleCardProps) {
     adjustTextareaHeight(event.target);
   };
 
-  const handleGoalKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleGoalKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>, goalId: string) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       if (role.goals.length < MAX_GOALS) {
         const newGoalId = Date.now().toString();
         const newGoal = {
           id: newGoalId,
-          text: "",  // Start empty instead of with default text
+          text: "",
           completed: false,
-          isDefault: false  // Start as not default
+          isDefault: false
         };
         onChange({ goals: [...role.goals, newGoal] });
         
-        // Focus the new goal after it's created
         setTimeout(() => {
           goalInputRefs.current[newGoalId]?.focus();
         }, 0);
+      }
+    } else if (event.key === 'Enter' && event.shiftKey) {
+      const currentLines = event.currentTarget.value.split('\n').length;
+      if (currentLines >= MAX_LINES) {
+        event.preventDefault();
       }
     }
   };
@@ -160,16 +166,20 @@ export default function RoleCard({ role, onDelete, onChange }: RoleCardProps) {
                 ref={el => goalInputRefs.current[goal.id] = el}
                 value={goal.text}
                 onChange={(e) => handleGoalChange(goal.id, e)}
-                onKeyDown={(e) => handleGoalKeyPress(e)}
+                onKeyDown={(e) => handleGoalKeyPress(e, goal.id)}
                 onFocus={() => handleGoalFocus(goal.id)}
                 onBlur={(e) => handleGoalBlur(goal.id, e)}
                 rows={1}
-                className={`w-full outline-none resize-none bg-transparent p-0 block
-                  ${goal.isDefault ? 'text-muted-foreground italic' : ''}
-                  overflow-hidden whitespace-pre-wrap break-words`}
+                spellCheck={false}
+                className={cn(
+                  "w-full outline-none resize-none bg-transparent p-0 block",
+                  "whitespace-pre-wrap break-words overflow-hidden",
+                  goal.isDefault && "text-muted-foreground italic"
+                )}
                 style={{ 
                   minHeight: '24px',
                   wordBreak: 'break-word',
+                  whiteSpace: 'pre-wrap'
                 }}
               />
             </div>
