@@ -4,7 +4,6 @@ import RoleCard from "@/components/layout/role-card";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { getCurrentWeekRange } from "@/lib/utils";
-import { YouTubeEmbed } from "@/components/youtube-embed";
 import { Role } from "@/types/roles";
 
 const MAX_ROLES = 6;
